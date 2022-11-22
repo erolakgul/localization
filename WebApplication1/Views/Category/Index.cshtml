@@ -1,0 +1,14 @@
+﻿@*@inject WebApplication1.Resources.SharedViewLocalizer localizer
+*@
+@using WebApplication1.Resources
+
+@inject ISharedViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@ViewData["HELLO"]
+
+@Localizer["HELLO"]
