@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using System.Globalization;
+using System.Reflection;
 using WebApplication1;
 using WebApplication1.Resources;
 
@@ -9,8 +10,22 @@ var builder = WebApplication.CreateBuilder(args);
 #region localization
 builder.Services.AddControllersWithViews()
         .AddViewLocalization(o => o.ResourcesPath = "Resources")
-        .AddDataAnnotationsLocalization(options => options.DataAnnotationLocalizerProvider
-                                      = (t, f) => f.Create(typeof(SharedResource))
+        .AddDataAnnotationsLocalization(
+    
+                                  //options => options.DataAnnotationLocalizerProvider
+                                  //    = (t, f) => f.Create(typeof(SharedResource))
+
+                                         options =>
+                                         //options.DataAnnotationLocalizerProvider
+                                         // = (t, f) => f.Create(typeof(SharedResource))
+                                         {
+                                             options.DataAnnotationLocalizerProvider = (type, factory) =>
+                                             {
+                                                 var assemblyName = new AssemblyName(typeof(SharedResource).GetTypeInfo().Assembly.FullName);
+                                                 return factory.Create(nameof(SharedResource), assemblyName.Name);
+                                             };
+                                         }
+
                                       );
 builder.Services.AddTransient<ISharedViewLocalizer, SharedViewLocalizer>(); 
 #endregion
